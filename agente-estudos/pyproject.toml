@@ -1,0 +1,12 @@
+[project]
+name = "agente-estudos"
+version = "0.1.0"
+description = "Agente de estudos local com Ollama e Streamlit"
+requires-python = ">=3.11,<3.14"
+dependencies = ["streamlit>=1.40,<2.0"]
+
+[dependency-groups]
+dev = ["pytest>=9.0.2,<10.0.0"]
+
+[tool.pytest.ini_options]
+pythonpath = "."

@@ -1,0 +1,19 @@
+# Configuração privada
+.env
+.env.local
+*.key.json
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Dados locais do agente
+agente-estudos/data/
+
+# Sistema e editores
+.DS_Store
+.vscode/
+.idea/
