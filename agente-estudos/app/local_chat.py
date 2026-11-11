@@ -14,7 +14,27 @@ from uuid import uuid4
 
 DEFAULT_MODEL = "llama3.2"
 DEFAULT_OLLAMA_HOST = "http://localhost:11434"
+DEFAULT_NUM_CTX = 8192
 SKILLS_DIR = Path(__file__).resolve().parents[2] / "skills"
+
+
+def _load_env_file() -> None:
+    """Carrega variáveis do arquivo .env local se existirem."""
+    env_path = Path(__file__).resolve().parents[1] / ".env"
+    if not env_path.exists():
+        return
+    for line in env_path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip()
+        value = value.strip().strip("\"'")
+        if key not in os.environ:
+            os.environ[key] = value
+
+
+_load_env_file()
 
 
 class OllamaError(RuntimeError):
@@ -106,15 +126,27 @@ def agent_instructions() -> str:
     )
 
 
-def stream_chat(messages: list[dict[str, str]], model: str | None = None) -> Iterator[dict[str, Any]]:
+def stream_chat(
+    messages: list[dict[str, str]],
+    model: str | None = None,
+    num_ctx: int | None = None,
+) -> Iterator[dict[str, Any]]:
     """Envia o histórico ao Ollama e produz cada objeto NDJSON recebido."""
     host = os.environ.get("OLLAMA_HOST", DEFAULT_OLLAMA_HOST).rstrip("/")
     selected_model = model or os.environ.get("OLLAMA_MODEL", DEFAULT_MODEL)
+    try:
+        context_tokens = num_ctx if num_ctx is not None else int(os.environ.get("OLLAMA_NUM_CTX", DEFAULT_NUM_CTX))
+    except ValueError:
+        context_tokens = DEFAULT_NUM_CTX
+
     payload = json.dumps(
         {
             "model": selected_model,
             "messages": [{"role": "system", "content": agent_instructions()}, *messages],
             "stream": True,
+            "options": {
+                "num_ctx": context_tokens,
+            },
         }
     ).encode()
     request = urllib.request.Request(

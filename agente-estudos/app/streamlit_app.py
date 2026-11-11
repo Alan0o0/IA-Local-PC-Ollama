@@ -8,6 +8,7 @@ import streamlit as st
 
 from local_chat import (
     DEFAULT_MODEL,
+    DEFAULT_NUM_CTX,
     OllamaError,
     clear_conversation,
     list_conversations,
@@ -30,10 +31,12 @@ if "conversation" not in st.session_state:
 
 conversation = st.session_state.conversation
 model = os.environ.get("OLLAMA_MODEL", DEFAULT_MODEL)
+num_ctx = os.environ.get("OLLAMA_NUM_CTX", str(DEFAULT_NUM_CTX))
 
 with st.sidebar:
-    st.title(" Agente de Estudos")
+    st.title("📚 Agente de Estudos")
     st.caption(f"Modelo local: `{model}`")
+    st.caption(f"Contexto: `{num_ctx} tokens`")
     if st.button("＋ Nova conversa", use_container_width=True):
         st.session_state.conversation = new_conversation()
         st.rerun()
