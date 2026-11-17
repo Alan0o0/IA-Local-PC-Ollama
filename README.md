@@ -14,7 +14,7 @@ ollama pull llama3.2
 Feche e abra o terminal depois da instalação do Ollama. Em seguida, entre na aplicação e inicie-a:
 
 ```powershell
-cd "C:\Users\oalan\Documents\IA-Local\Agente-de-IA-Estudos\agente-estudos"
+cd "**\**\IA-Local-PC-Ollama\agente-estudos"
 uv sync
 uv run streamlit run app/streamlit_app.py
 ```
@@ -84,7 +84,7 @@ Quando a pessoa pede flashcards ou quiz, o agente pede o material ou tópico se 
 ## Estrutura
 
 ```text
-Agente-de-IA-Estudos/
+IA-Local-PC-Ollama/
 ├── skills/                         # comportamento do agente
 │   ├── plano-de-estudos/SKILL.md
 │   └── revisao-ativa/SKILL.md
